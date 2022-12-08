@@ -2,8 +2,8 @@
 {
     public class UpdateBookRequest
     {
-        public string Author { get; set; }
-        public string Title { get; set; }
-        public string ISBN { get; set; }
+        public string Author { get; set; } = String.Empty;
+        public string Title { get; set; } = String.Empty;
+        public string ISBN { get; set; } = String.Empty;
     }
 }
