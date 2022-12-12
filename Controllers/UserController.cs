@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace BookRental_dotnet.Controllers
 {
     [ApiController]
@@ -36,40 +37,40 @@ namespace BookRental_dotnet.Controllers
             return Ok(user);
 
         }
-       
+
         [HttpPost]
         [Route("add")]
-        public async Task<IActionResult> AddUser(AddUserRequest addUserRequest) {
+        public async Task<IActionResult> AddUser(AddUserRequest addUserRequest)
+        {
             var user = new User()
-            { Id = Guid.NewGuid(), 
-            firstName = addUserRequest.firstName, 
-            lastName = addUserRequest.lastName, 
-            email = addUserRequest.email, 
-            username = addUserRequest.username, 
-            password = addUserRequest.password, 
-            isAdmin = addUserRequest.isAdmin,
-            firstTimeLogin = addUserRequest.firstTimeLogin
-             };
+            {
+                Id = Guid.NewGuid(),
+                firstName = addUserRequest.firstName,
+                lastName = addUserRequest.lastName,
+                email = addUserRequest.email,
+                username = addUserRequest.username,
+                password = addUserRequest.password,
+                isAdmin = addUserRequest.isAdmin,
+                firstTimeLogin = addUserRequest.firstTimeLogin
+            };
             await dbContext.Users.AddAsync(user);
             await dbContext.SaveChangesAsync();
             return Ok(user);
         }
-      
+
+
         [HttpPut]
-        [Route("{id:guid}")]
-        public async Task<IActionResult> UpdateUser([FromRoute] Guid id, UpdateUserRequest updateUserRequest)
+        [Route("register")]
+        public async Task<IActionResult> RegisterUser(UserRegistration userRegistration)
         {
-            var user = await dbContext.Users.FindAsync(id);
+            var user = await dbContext.Users.FirstOrDefaultAsync(u => u.email == userRegistration.email);
             
             if (user != null)
             {
-            user.firstName = updateUserRequest.firstName;
-            user.lastName = updateUserRequest.lastName; 
-            user.email = updateUserRequest.email; 
-            user.username = updateUserRequest.username; 
-            user.password = updateUserRequest.password; 
-            user.isAdmin = updateUserRequest.isAdmin;
-            user.firstTimeLogin = updateUserRequest.firstTimeLogin;
+            user.username = userRegistration.username; 
+            user.password = userRegistration.password; 
+            user.isAdmin = userRegistration.isAdmin;
+            user.firstTimeLogin = false;
 
                 await dbContext.SaveChangesAsync();
 
@@ -77,7 +78,32 @@ namespace BookRental_dotnet.Controllers
             }
             return NotFound();
         }
-      
+
+        [HttpPut]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> UpdateUser([FromRoute] Guid id, UpdateUserRequest updateUserRequest)
+        {
+            var user = await dbContext.Users.FindAsync(id);
+
+            if (user != null)
+            {
+                user.firstName = updateUserRequest.firstName;
+                user.lastName = updateUserRequest.lastName;
+                user.email = updateUserRequest.email;
+                user.username = updateUserRequest.username;
+                user.password = updateUserRequest.password;
+                user.isAdmin = updateUserRequest.isAdmin;
+                user.firstTimeLogin = updateUserRequest.firstTimeLogin;
+
+                await dbContext.SaveChangesAsync();
+
+                return Ok(user);
+            }
+            return NotFound();
+        }
+
+
+
         [HttpDelete]
         [Route("{id:guid}")]
         public async Task<IActionResult> DeleteUser([FromRoute] Guid id)
