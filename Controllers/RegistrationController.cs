@@ -31,7 +31,6 @@ namespace BookRental_dotnet.Controllers
             {
                 user.username = userRegistration.username;
                 user.password = passwordHash;
-                user.isAdmin = userRegistration.isAdmin;
                 user.firstTimeLogin = false;
 
                 await dbContext.SaveChangesAsync();

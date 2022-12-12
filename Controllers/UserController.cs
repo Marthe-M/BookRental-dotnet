@@ -48,10 +48,8 @@ namespace BookRental_dotnet.Controllers
                 firstName = addUserRequest.firstName,
                 lastName = addUserRequest.lastName,
                 email = addUserRequest.email,
-                username = addUserRequest.username,
-                password = addUserRequest.password,
                 isAdmin = addUserRequest.isAdmin,
-                firstTimeLogin = addUserRequest.firstTimeLogin
+      
             };
             await dbContext.Users.AddAsync(user);
             await dbContext.SaveChangesAsync();
