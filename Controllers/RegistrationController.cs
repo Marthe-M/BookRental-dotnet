@@ -1,6 +1,6 @@
 ﻿using BookRental_dotnet.Data;
 using BookRental_dotnet.Models;
-using Microsoft.AspNetCore.Cors;
+using BCrypt.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,10 +25,12 @@ namespace BookRental_dotnet.Controllers
         {
             var user = await dbContext.Users.FirstOrDefaultAsync(u => u.email == userRegistration.email);
 
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(userRegistration.password);
+
             if (user != null)
             {
                 user.username = userRegistration.username;
-                user.password = userRegistration.password;
+                user.password = passwordHash;
                 user.isAdmin = userRegistration.isAdmin;
                 user.firstTimeLogin = false;
 
