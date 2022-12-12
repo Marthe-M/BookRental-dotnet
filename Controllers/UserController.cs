@@ -59,26 +59,7 @@ namespace BookRental_dotnet.Controllers
         }
 
 
-        [HttpPut]
-        [Route("register")]
-        public async Task<IActionResult> RegisterUser(UserRegistration userRegistration)
-        {
-            var user = await dbContext.Users.FirstOrDefaultAsync(u => u.email == userRegistration.email);
-            
-            if (user != null)
-            {
-            user.username = userRegistration.username; 
-            user.password = userRegistration.password; 
-            user.isAdmin = userRegistration.isAdmin;
-            user.firstTimeLogin = false;
-
-                await dbContext.SaveChangesAsync();
-
-                return Ok(user);
-            }
-            return NotFound();
-        }
-
+       
         [HttpPut]
         [Route("{id:guid}")]
         public async Task<IActionResult> UpdateUser([FromRoute] Guid id, UpdateUserRequest updateUserRequest)
