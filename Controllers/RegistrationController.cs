@@ -23,22 +23,28 @@ namespace BookRental_dotnet.Controllers
         [HttpPut]
         public async Task<IActionResult> RegisterUser(UserRegistration userRegistration)
         {
-            var user = await dbContext.Users.FirstOrDefaultAsync(u => u.email == userRegistration.email);
 
-            string passwordHash = BCrypt.Net.BCrypt.HashPassword(userRegistration.password);
-
-            if (user != null)
+            var userExist = await dbContext.Users.FirstOrDefaultAsync(u => u.username == userRegistration.username);
+            if (userExist == null)
             {
-                user.username = userRegistration.username;
-                user.password = passwordHash;
-                user.firstTimeLogin = false;
+                var user = await dbContext.Users.FirstOrDefaultAsync(u => u.email == userRegistration.email);
 
-                await dbContext.SaveChangesAsync();
+                string passwordHash = BCrypt.Net.BCrypt.HashPassword(userRegistration.password);
 
-                return Ok(user);
+                if (user != null)
+                {
+                    user.username = userRegistration.username;
+                    user.password = passwordHash;
+                    user.firstTimeLogin = false;
+
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(user);
+                }
+                return NotFound();
             }
-            return NotFound();
+            return BadRequest("User already exists");
         }
-
+      
     }
 }

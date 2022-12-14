@@ -21,7 +21,7 @@ namespace BookRental_dotnet.Controllers
         [HttpPost]
         public async Task<IActionResult> LoginUser(UserLogin userLogin)
         {
-           var user = await dbContext.Users.FirstOrDefaultAsync(u => u.username == userLogin.username);
+            var user = await dbContext.Users.FirstOrDefaultAsync(u => u.username == userLogin.username);
             
             if (user != null)
             {

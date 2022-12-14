@@ -42,6 +42,10 @@ namespace BookRental_dotnet.Controllers
         [Route("add")]
         public async Task<IActionResult> AddUser(AddUserRequest addUserRequest)
         {
+
+            var userExist = await dbContext.Users.FirstOrDefaultAsync(u => u.email == addUserRequest.email);
+            if(userExist == null)
+            {
             var user = new User()
             {
                 Id = Guid.NewGuid(),
@@ -54,6 +58,8 @@ namespace BookRental_dotnet.Controllers
             await dbContext.Users.AddAsync(user);
             await dbContext.SaveChangesAsync();
             return Ok(user);
+            }
+            return BadRequest("User already exists");
         }
 
 
