@@ -3,7 +3,9 @@ using BookRental_dotnet.Models;
 using BCrypt.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace BookRental_dotnet.Controllers
 {
@@ -12,9 +14,12 @@ namespace BookRental_dotnet.Controllers
     public class LoginController : Controller
     {
         private readonly BookAPIDbContext dbContext;
-        public LoginController(BookAPIDbContext dbContext)
+
+        private readonly IConfiguration configuration;
+        public LoginController(BookAPIDbContext dbContext, IConfiguration configuration)
         {
             this.dbContext = dbContext;
+            this.configuration = configuration;
         }
 
 
@@ -22,16 +27,39 @@ namespace BookRental_dotnet.Controllers
         public async Task<IActionResult> LoginUser(UserLogin userLogin)
         {
             var user = await dbContext.Users.FirstOrDefaultAsync(u => u.username == userLogin.username);
-            
+
             if (user != null)
             {
                 bool verified = BCrypt.Net.BCrypt.Verify(userLogin.password, user.password);
-                if (verified) {
-                    return Ok(user);
+                if (verified)
+                {
+                    string token = CreateToken(user);
+                    return Ok(token);
                 }
             }
 
-          return NotFound();
+            return NotFound();
+        }
+
+        private string CreateToken(User user)
+        {
+            List<Claim> claims = new List<Claim> {
+                new Claim(ClaimTypes.Name, user.username),
+                new Claim(ClaimTypes.Role, user.isAdmin.ToString())
+            };
+
+            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
+                configuration.GetSection("AppSettings:Token").Value));
+
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            var token = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: creds);
+
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+            return jwt;
         }
 
     }

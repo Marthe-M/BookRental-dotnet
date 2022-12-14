@@ -1,5 +1,6 @@
 ﻿using BookRental_dotnet.Data;
 using BookRental_dotnet.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ namespace BookRental_dotnet.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles="True")] 
     public class BookController : Controller
     {
         private readonly BookAPIDbContext dbContext;
