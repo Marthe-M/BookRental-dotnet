@@ -9,7 +9,7 @@ namespace BookRental_dotnet.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles="True")] 
+    
     public class BookController : Controller
     {
         private readonly BookAPIDbContext dbContext;
@@ -20,6 +20,7 @@ namespace BookRental_dotnet.Controllers
         }
       
         [HttpGet]
+        [Authorize] 
         public async Task<IActionResult> GetAllBooks()
         {
             return Ok(await dbContext.Books.ToListAsync()); 
@@ -27,7 +28,9 @@ namespace BookRental_dotnet.Controllers
         }
        
         [HttpGet]
+        [Authorize] 
         [Route("{id:guid}")]
+       
         public async Task<IActionResult> GetBookById([FromRoute] Guid id)
         {
             var book = await dbContext.Books.FindAsync(id);
@@ -40,6 +43,7 @@ namespace BookRental_dotnet.Controllers
         }
        
         [HttpPost]
+        [Authorize(Roles="True")] 
         [Route("add")]
         public async Task<IActionResult> AddBook(AddBookRequest addBookRequest) {
             var book = new Book()
@@ -50,6 +54,7 @@ namespace BookRental_dotnet.Controllers
         }
       
         [HttpPut]
+        [Authorize(Roles="True")] 
         [Route("{id:guid}")]
         public async Task<IActionResult> UpdateBook([FromRoute] Guid id, UpdateBookRequest updateBookRequest)
         {
@@ -69,6 +74,7 @@ namespace BookRental_dotnet.Controllers
         }
       
         [HttpDelete]
+        [Authorize(Roles="True")] 
         [Route("{id:guid}")]
         public async Task<IActionResult> DeleteBook([FromRoute] Guid id)
         {
