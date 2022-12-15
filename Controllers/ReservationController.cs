@@ -24,9 +24,12 @@ namespace BookRental_dotnet.Controllers
             var book = await dbContext.Books.FindAsync(addReservationRequest.bookId);
             var reservation = new Reservation()
             { id = Guid.NewGuid(), approved = addReservationRequest.approved, user = user, book = book};
-            Console.WriteLine(reservation.book.Title);
-            await dbContext.Reservations.AddAsync(reservation);
-            await dbContext.SaveChangesAsync();
+
+            if (!dbContext.Reservations.Any(r => r.user == user && r.book == r.book)) {
+                await dbContext.Reservations.AddAsync(reservation);
+                await dbContext.SaveChangesAsync();
+            }
+
             return Ok(reservation);
         }
 
