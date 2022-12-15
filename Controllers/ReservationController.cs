@@ -23,10 +23,33 @@ namespace BookRental_dotnet.Controllers
             var user = await dbContext.Users.FindAsync(addReservationRequest.userId);
             var book = await dbContext.Books.FindAsync(addReservationRequest.bookId);
             var reservation = new Reservation()
-            { id = Guid.NewGuid(), approved = addReservationRequest.approved, user = user, book = book };
+            { id = Guid.NewGuid(), approved = addReservationRequest.approved, user = user, book = book};
+            Console.WriteLine(reservation.book.Title);
             await dbContext.Reservations.AddAsync(reservation);
             await dbContext.SaveChangesAsync();
             return Ok(reservation);
+        }
+
+        [HttpDelete]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> DeleteReservation([FromRoute] Guid id)
+        {
+            var reservation = await dbContext.Reservations.FindAsync(id);
+            if(reservation != null)
+            {
+                dbContext.Remove(reservation);
+                await dbContext.SaveChangesAsync();
+                return Ok();
+            }
+            return NotFound();
+        }
+
+        [HttpGet]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> GetReservations([FromRoute] Guid id)
+        {
+            var reservations = await dbContext.Reservations.Where(r => r.user.Id == id).Include(r => r.book).ToListAsync();
+            return Ok(reservations);
         }
     }
 }
