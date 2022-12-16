@@ -4,6 +4,7 @@ using BookRental_dotnet.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookRentaldotnet.Migrations
 {
     [DbContext(typeof(BookAPIDbContext))]
-    partial class BookAPIDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221212142558_AddReservationDb")]
+    partial class AddReservationDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,24 +50,24 @@ namespace BookRentaldotnet.Migrations
 
             modelBuilder.Entity("BookRental_dotnet.Models.Reservation", b =>
                 {
-                    b.Property<Guid>("id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("approved")
+                    b.Property<bool>("Approved")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("bookId")
+                    b.Property<Guid>("BookId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("userId")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("id");
+                    b.HasKey("Id");
 
-                    b.HasIndex("bookId");
+                    b.HasIndex("BookId");
 
-                    b.HasIndex("userId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Reservations");
                 });
@@ -108,26 +111,21 @@ namespace BookRentaldotnet.Migrations
 
             modelBuilder.Entity("BookRental_dotnet.Models.Reservation", b =>
                 {
-                    b.HasOne("BookRental_dotnet.Models.Book", "book")
+                    b.HasOne("BookRental_dotnet.Models.Book", "Book")
                         .WithMany()
-                        .HasForeignKey("bookId")
+                        .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BookRental_dotnet.Models.User", "user")
-                        .WithMany("reservations")
-                        .HasForeignKey("userId")
+                    b.HasOne("BookRental_dotnet.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("book");
+                    b.Navigation("Book");
 
-                    b.Navigation("user");
-                });
-
-            modelBuilder.Entity("BookRental_dotnet.Models.User", b =>
-                {
-                    b.Navigation("reservations");
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }
