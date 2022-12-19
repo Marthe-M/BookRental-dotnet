@@ -45,6 +45,7 @@ namespace BookRental_dotnet.Controllers
         {
             List<Claim> claims = new List<Claim> {
                 new Claim(ClaimTypes.Name, user.username),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Role, user.isAdmin.ToString())
             };
 
