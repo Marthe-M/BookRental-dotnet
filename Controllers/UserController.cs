@@ -1,5 +1,6 @@
 ﻿using BookRental_dotnet.Data;
 using BookRental_dotnet.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ namespace BookRental_dotnet.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    
     public class UserController : Controller
     {
         private readonly BookAPIDbContext dbContext;
@@ -19,6 +21,7 @@ namespace BookRental_dotnet.Controllers
         }
       
         [HttpGet]
+         [Authorize(Roles="True")] 
         public async Task<IActionResult> GetAllBooks()
         {
             return Ok(await dbContext.Users.ToListAsync()); 
@@ -26,6 +29,7 @@ namespace BookRental_dotnet.Controllers
         }
        
         [HttpGet]
+         [Authorize(Roles="True")]
         [Route("{id:guid}")]
         public async Task<IActionResult> GetUserById([FromRoute] Guid id)
         {
@@ -39,6 +43,7 @@ namespace BookRental_dotnet.Controllers
         }
 
         [HttpPost]
+         [Authorize(Roles="True")]
         [Route("add")]
         public async Task<IActionResult> AddUser(AddUserRequest addUserRequest)
         {
@@ -66,6 +71,7 @@ namespace BookRental_dotnet.Controllers
        
         [HttpPut]
         [Route("{id:guid}")]
+         [Authorize(Roles="True")]
         public async Task<IActionResult> UpdateUser([FromRoute] Guid id, UpdateUserRequest updateUserRequest)
         {
             var user = await dbContext.Users.FindAsync(id);
@@ -91,6 +97,7 @@ namespace BookRental_dotnet.Controllers
 
         [HttpDelete]
         [Route("{id:guid}")]
+         [Authorize(Roles="True")]
         public async Task<IActionResult> DeleteUser([FromRoute] Guid id)
         {
             var user = await dbContext.Users.FindAsync(id);
