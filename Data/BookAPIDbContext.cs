@@ -1,6 +1,7 @@
 ﻿using BookRental_dotnet.Models;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace BookRental_dotnet.Data
 {
     public class BookAPIDbContext : DbContext
@@ -11,5 +12,13 @@ namespace BookRental_dotnet.Data
         public DbSet<Book> Books { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
+        public DbSet<Loan> Loans { get; set; }
+
     }
+
+
 }
+
+
+
+

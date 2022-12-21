@@ -4,6 +4,7 @@ using BookRental_dotnet.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookRentaldotnet.Migrations
 {
     [DbContext(typeof(BookAPIDbContext))]
-    partial class BookAPIDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221221121548_loantable")]
+    partial class loantable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -80,7 +83,7 @@ namespace BookRentaldotnet.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Loans");
+                    b.ToTable("Loan");
                 });
 
             modelBuilder.Entity("BookRental_dotnet.Models.Reservation", b =>
