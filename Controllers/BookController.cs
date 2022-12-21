@@ -47,7 +47,11 @@ namespace BookRental_dotnet.Controllers
         [Route("add")]
         public async Task<IActionResult> AddBook(AddBookRequest addBookRequest) {
             var book = new Book()
-            { Id = Guid.NewGuid(), Author = addBookRequest.Author, ISBN = addBookRequest.ISBN, Title = addBookRequest.Title };
+            { Id = Guid.NewGuid(), 
+            Author = addBookRequest.Author, 
+            ISBN = addBookRequest.ISBN, 
+            Title = addBookRequest.Title,
+            isAvailable = true };
             await dbContext.Books.AddAsync(book);
             await dbContext.SaveChangesAsync();
             return Ok(book);
@@ -65,7 +69,7 @@ namespace BookRental_dotnet.Controllers
                 book.Author = updateBookRequest.Author;
                 book.Title= updateBookRequest.Title;
                 book.ISBN = updateBookRequest.ISBN;
-
+   
                 await dbContext.SaveChangesAsync();
 
                 return Ok(book);

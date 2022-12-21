@@ -10,7 +10,7 @@
         public string password { get; set; } = String.Empty;
         public bool isAdmin { get; set; } = false;
         public bool firstTimeLogin { get; set; } = true;
-        public Loan Loan { get; set; }
+        public ICollection<Loan> Loans { get; set; } 
         public ICollection<Reservation> Reservations { get; set; }
 
     }

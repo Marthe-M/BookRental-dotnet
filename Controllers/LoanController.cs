@@ -18,39 +18,23 @@ namespace BookRental_dotnet.Controllers
             this.dbContext = dbContext;
         }
 
-        /*         [HttpGet]
-                [Authorize(Roles="True")] 
-                public async Task<IActionResult> GetAllBooksFromReservations()
-                {
-                   return Ok(await dbContext.Reservations
-                   .Include(r => r.book)
-                   .Include(r => r.user)
-                   .ToListAsync());
-                }
-         */
-
-
-        [HttpPost]
-        [Authorize]
-        [Route("add")]
-        public async Task<IActionResult> AddLoan(AddLoan addloan)
+        [HttpGet]
+        [Authorize(Roles = "True")]
+        public async Task<IActionResult> GetAllLoans()
         {
-            var user = await dbContext.Users.FindAsync(addloan.UserId);
-            var book = await dbContext.Books.FindAsync(addloan.BookId);
-            var newLoan = new Loan()
-            {
-                Id = Guid.NewGuid(),
-                Approved = true,
-                StartDate = DateTime.Now,
-                User = user,
-                Book = book
-            };
+            return Ok(await dbContext.Loans
+            .Include(l => l.Book)
+            .Include(l => l.User)
+            .ToListAsync());
+        }
 
-                await dbContext.Loans.AddAsync(newLoan);
-                await dbContext.SaveChangesAsync();
-         
-
-            return Ok(newLoan);
+        [HttpGet]
+        [Authorize] 
+        [Route("{id:guid}")]
+        public async Task<IActionResult> GetLoanByUserId([FromRoute] Guid id)
+        {
+            var loans = await dbContext.Loans.Where(l => l.User.Id == id).Include(l => l.Book).ToListAsync();
+            return Ok(loans);
         }
 
 

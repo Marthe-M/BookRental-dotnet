@@ -20,7 +20,7 @@ namespace BookRental_dotnet.Controllers
 
         [HttpGet]
         [Authorize(Roles="True")] 
-        public async Task<IActionResult> GetAllBooksFromReservations()
+        public async Task<IActionResult> GetAllReservations()
         {
            return Ok(await dbContext.Reservations
            .Include(r => r.book)

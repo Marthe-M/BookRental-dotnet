@@ -7,7 +7,7 @@
         public string Title { get; set; } 
         public string ISBN { get; set; } 
         public bool isAvailable {get; set; }
-        public Loan Loan {get; set; }
+        public ICollection<Loan> Loans { get; set; } 
         public ICollection<Reservation> Reservations { get; set; } 
 
      }
