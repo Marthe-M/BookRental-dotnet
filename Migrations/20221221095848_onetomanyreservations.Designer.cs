@@ -4,6 +4,7 @@ using BookRental_dotnet.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookRentaldotnet.Migrations
 {
     [DbContext(typeof(BookAPIDbContext))]
-    partial class BookAPIDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221221095848_onetomanyreservations")]
+    partial class onetomanyreservations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,50 +43,14 @@ namespace BookRentaldotnet.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("isAvailable")
-                        .HasColumnType("bit");
-
                     b.HasKey("Id");
 
                     b.ToTable("Books");
                 });
 
-            modelBuilder.Entity("BookRental_dotnet.Models.Loan", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("Approved")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("BookId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("ReturnDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("Returned")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Loans");
-                });
-
             modelBuilder.Entity("BookRental_dotnet.Models.Reservation", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -96,7 +63,7 @@ namespace BookRentaldotnet.Migrations
                     b.Property<Guid>("userId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.HasIndex("bookId");
 
@@ -142,25 +109,6 @@ namespace BookRentaldotnet.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("BookRental_dotnet.Models.Loan", b =>
-                {
-                    b.HasOne("BookRental_dotnet.Models.Book", "Book")
-                        .WithMany("Loans")
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BookRental_dotnet.Models.User", "User")
-                        .WithMany("Loans")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Book");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("BookRental_dotnet.Models.Reservation", b =>
                 {
                     b.HasOne("BookRental_dotnet.Models.Book", "book")
@@ -182,15 +130,11 @@ namespace BookRentaldotnet.Migrations
 
             modelBuilder.Entity("BookRental_dotnet.Models.Book", b =>
                 {
-                    b.Navigation("Loans");
-
                     b.Navigation("Reservations");
                 });
 
             modelBuilder.Entity("BookRental_dotnet.Models.User", b =>
                 {
-                    b.Navigation("Loans");
-
                     b.Navigation("Reservations");
                 });
 #pragma warning restore 612, 618

@@ -4,6 +4,7 @@ using BookRental_dotnet.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookRentaldotnet.Migrations
 {
     [DbContext(typeof(BookAPIDbContext))]
-    partial class BookAPIDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221221134226_loanonetomany")]
+    partial class loanonetomany
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -74,7 +77,8 @@ namespace BookRentaldotnet.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BookId");
+                    b.HasIndex("BookId")
+                        .IsUnique();
 
                     b.HasIndex("UserId");
 
@@ -145,8 +149,8 @@ namespace BookRentaldotnet.Migrations
             modelBuilder.Entity("BookRental_dotnet.Models.Loan", b =>
                 {
                     b.HasOne("BookRental_dotnet.Models.Book", "Book")
-                        .WithMany("Loans")
-                        .HasForeignKey("BookId")
+                        .WithOne("Loan")
+                        .HasForeignKey("BookRental_dotnet.Models.Loan", "BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -182,7 +186,8 @@ namespace BookRentaldotnet.Migrations
 
             modelBuilder.Entity("BookRental_dotnet.Models.Book", b =>
                 {
-                    b.Navigation("Loans");
+                    b.Navigation("Loan")
+                        .IsRequired();
 
                     b.Navigation("Reservations");
                 });
