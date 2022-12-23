@@ -10,6 +10,8 @@
         public string password { get; set; }
         public bool isAdmin { get; set; }
         public bool firstTimeLogin { get; set; }
+        public ICollection<Loan> Loans { get; set; }
+        public ICollection<Reservation> Reservations { get; set; }
 
         public User(Guid Id, string firstName, string lastName, string email, string username, string password, bool isAdmin, bool firstTimeLogin) {
             this.Id = Id;

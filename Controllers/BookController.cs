@@ -25,7 +25,7 @@ namespace BookRental_dotnet.Controllers
         {
             var books = await dbContext.Books.ToListAsync();
             var dtos = from b in dbContext.Books
-                       select new BookResponseDTO(b.Id, b.Author, b.Title, b.ISBN);
+                       select new BookResponseDTO(b.Id, b.Author, b.Title, b.ISBN, b.isAvailable);
             return Ok(dtos);
         }
        
@@ -39,17 +39,17 @@ namespace BookRental_dotnet.Controllers
             {
                 return NotFound();
             }
-            return Ok(new BookResponseDTO(book.Id, book.Author, book.Title, book.ISBN));
+            return Ok(new BookResponseDTO(book.Id, book.Author, book.Title, book.ISBN, book.isAvailable));
         }
        
         [HttpPost]
         [Authorize(Roles="True")] 
         [Route("add")]
         public async Task<IActionResult> AddBook(BookRequestDTO dto) {
-            var book = new Book(Guid.NewGuid(), dto.Author, dto.ISBN, dto.Title);
+            var book = new Book(Guid.NewGuid(), dto.Author, dto.ISBN, dto.Title, true);
             await dbContext.Books.AddAsync(book);
             await dbContext.SaveChangesAsync();
-            return Ok(new BookResponseDTO(book.Id, book.Author, book.Title, book.ISBN));
+            return Ok(new BookResponseDTO(book.Id, book.Author, book.Title, book.ISBN, book.isAvailable));
         }
       
         [HttpPut]
@@ -64,10 +64,11 @@ namespace BookRental_dotnet.Controllers
                 book.Author = dto.Author;
                 book.Title= dto.Title;
                 book.ISBN = dto.ISBN;
+                book.isAvailable = dto.isAvailable;
 
                 await dbContext.SaveChangesAsync();
 
-                return Ok(new BookResponseDTO(book.Id, book.Author, book.Title, book.ISBN));
+                return Ok(new BookResponseDTO(book.Id, book.Author, book.Title, book.ISBN, book.isAvailable));
             }
             return NotFound();
         }

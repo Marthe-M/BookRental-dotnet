@@ -52,7 +52,7 @@ namespace BookRental_dotnet.Controllers
             var userExist = await dbContext.Users.FirstOrDefaultAsync(u => u.email == dto.email);
             if(userExist == null)
             {
-            var user = new User(Guid.NewGuid(), dto.firstName, dto.lastName, dto.email, null, null, dto.isAdmin, true);
+            var user = new User(Guid.NewGuid(), dto.firstName, dto.lastName, dto.email, String.Empty, String.Empty, dto.isAdmin, true);
             await dbContext.Users.AddAsync(user);
             await dbContext.SaveChangesAsync();
             return Ok(new UserResponseDTO(user.Id, user.firstName, user.lastName, user.email, user.username,

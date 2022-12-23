@@ -2,6 +2,7 @@
 using BookRental_dotnet.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookRental_dotnet.Controllers
@@ -17,7 +18,20 @@ namespace BookRental_dotnet.Controllers
             this.dbContext = dbContext;
         }
 
+        [HttpGet]
+        [Authorize(Roles="True")] 
+        public async Task<IActionResult> GetAllReservations()
+        {
+           return Ok(await dbContext.Reservations
+           .Include(r => r.book)
+           .Include(r => r.user)
+           .ToListAsync());
+        }
+
+
+
         [HttpPost]
+        [Authorize] 
         [Route("add")]
         public async Task<IActionResult> AddReservation(ReservationRequestDTO dto) {
             var user = await dbContext.Users.FindAsync(dto.userId);
@@ -26,7 +40,8 @@ namespace BookRental_dotnet.Controllers
             reservation.user = user;
             reservation.book = book;
 
-            if (!dbContext.Reservations.Any(r => r.user == user && r.book == book)) {
+            if (!dbContext.Reservations.Any(r => r.user == user && r.book == book))
+            {
                 await dbContext.Reservations.AddAsync(reservation);
                 await dbContext.SaveChangesAsync();
             }
@@ -35,11 +50,12 @@ namespace BookRental_dotnet.Controllers
         }
 
         [HttpDelete]
+        [Authorize] 
         [Route("{id:guid}")]
         public async Task<IActionResult> DeleteReservation([FromRoute] Guid id)
         {
             var reservation = await dbContext.Reservations.FindAsync(id);
-            if(reservation != null)
+            if (reservation != null)
             {
                 dbContext.Remove(reservation);
                 await dbContext.SaveChangesAsync();
@@ -49,6 +65,7 @@ namespace BookRental_dotnet.Controllers
         }
 
         [HttpGet]
+        [Authorize] 
         [Route("{id:guid}")]
         public async Task<IActionResult> GetReservations([FromRoute] Guid id)
         {
