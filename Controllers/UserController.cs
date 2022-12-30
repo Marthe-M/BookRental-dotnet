@@ -24,8 +24,10 @@ namespace BookRental_dotnet.Controllers
          [Authorize(Roles="True")] 
         public async Task<IActionResult> GetAllBooks()
         {
-            return Ok(await dbContext.Users.ToListAsync()); 
-           
+            var users = await dbContext.Users.ToListAsync();
+            var dtos = from u in users select new UserResponseDTO(u.Id, u.firstName, u.lastName, u.email, u.username,
+                                                              u.password, u.isAdmin, u.firstTimeLogin);
+            return Ok(dtos);
         }
        
         [HttpGet]
@@ -38,31 +40,23 @@ namespace BookRental_dotnet.Controllers
             {
                 return NotFound();
             }
-            return Ok(user);
-
+            return Ok(new UserResponseDTO(user.Id, user.firstName, user.lastName, user.email, user.username,
+                                          user.password, user.isAdmin, user.firstTimeLogin));
         }
 
         [HttpPost]
          [Authorize(Roles="True")]
         [Route("add")]
-        public async Task<IActionResult> AddUser(AddUserRequest addUserRequest)
+        public async Task<IActionResult> AddUser(UserAddDTO dto)
         {
-
-            var userExist = await dbContext.Users.FirstOrDefaultAsync(u => u.email == addUserRequest.email);
+            var userExist = await dbContext.Users.FirstOrDefaultAsync(u => u.email == dto.email);
             if(userExist == null)
             {
-            var user = new User()
-            {
-                Id = Guid.NewGuid(),
-                firstName = addUserRequest.firstName,
-                lastName = addUserRequest.lastName,
-                email = addUserRequest.email,
-                isAdmin = addUserRequest.isAdmin,
-      
-            };
+            var user = new User(Guid.NewGuid(), dto.firstName, dto.lastName, dto.email, String.Empty, String.Empty, dto.isAdmin, true);
             await dbContext.Users.AddAsync(user);
             await dbContext.SaveChangesAsync();
-            return Ok(user);
+            return Ok(new UserResponseDTO(user.Id, user.firstName, user.lastName, user.email, user.username,
+                                          user.password, user.isAdmin, user.firstTimeLogin));
             }
             return BadRequest("User already exists");
         }
@@ -72,23 +66,24 @@ namespace BookRental_dotnet.Controllers
         [HttpPut]
         [Route("{id:guid}")]
          [Authorize(Roles="True")]
-        public async Task<IActionResult> UpdateUser([FromRoute] Guid id, UpdateUserRequest updateUserRequest)
+        public async Task<IActionResult> UpdateUser([FromRoute] Guid id, UserUpdateDTO dto)
         {
             var user = await dbContext.Users.FindAsync(id);
 
             if (user != null)
             {
-                user.firstName = updateUserRequest.firstName;
-                user.lastName = updateUserRequest.lastName;
-                user.email = updateUserRequest.email;
-                user.username = updateUserRequest.username;
-                user.password = updateUserRequest.password;
-                user.isAdmin = updateUserRequest.isAdmin;
-                user.firstTimeLogin = updateUserRequest.firstTimeLogin;
+                user.firstName = dto.firstName;
+                user.lastName = dto.lastName;
+                user.email = dto.email;
+                user.username = dto.username;
+                user.password = dto.password;
+                user.isAdmin = dto.isAdmin;
+                user.firstTimeLogin = dto.firstTimeLogin;
 
                 await dbContext.SaveChangesAsync();
 
-                return Ok(user);
+                return Ok(new UserResponseDTO(user.Id, user.firstName, user.lastName, user.email, user.username,
+                                              user.password, user.isAdmin, user.firstTimeLogin));
             }
             return NotFound();
         }
