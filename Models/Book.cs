@@ -10,5 +10,12 @@
         public ICollection<Loan> Loans { get; set; } 
         public ICollection<Reservation> Reservations { get; set; } 
 
+        public Book(Guid Id, string Author, string Title, string ISBN, bool isAvailable) {
+            this.Id = Id;
+            this.Author = Author;
+            this.Title = Title;
+            this.ISBN = ISBN;
+            this.isAvailable = isAvailable;
+        }
      }
 }

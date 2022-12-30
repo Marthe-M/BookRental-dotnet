@@ -24,13 +24,13 @@ namespace BookRental_dotnet.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> LoginUser(UserLogin userLogin)
+        public async Task<IActionResult> LoginUser(UserLoginDTO dto)
         {
-            var user = await dbContext.Users.FirstOrDefaultAsync(u => u.username == userLogin.username);
+            var user = await dbContext.Users.FirstOrDefaultAsync(u => u.username == dto.username);
 
             if (user != null)
             {
-                bool verified = BCrypt.Net.BCrypt.Verify(userLogin.password, user.password);
+                bool verified = BCrypt.Net.BCrypt.Verify(dto.password, user.password);
                 if (verified)
                 {
                     string token = CreateToken(user);

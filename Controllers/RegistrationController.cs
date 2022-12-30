@@ -21,25 +21,25 @@ namespace BookRental_dotnet.Controllers
 
 
         [HttpPut]
-        public async Task<IActionResult> RegisterUser(UserRegistration userRegistration)
+        public async Task<IActionResult> RegisterUser(UserRegistrationDTO dto)
         {
-
-            var userExist = await dbContext.Users.FirstOrDefaultAsync(u => u.username == userRegistration.username);
+            var userExist = await dbContext.Users.FirstOrDefaultAsync(u => u.username == dto.username);
             if (userExist == null)
             {
-                var user = await dbContext.Users.FirstOrDefaultAsync(u => u.email == userRegistration.email);
+                var user = await dbContext.Users.FirstOrDefaultAsync(u => u.email == dto.email);
 
-                string passwordHash = BCrypt.Net.BCrypt.HashPassword(userRegistration.password);
+                string passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.password);
 
                 if (user != null)
                 {
-                    user.username = userRegistration.username;
+                    user.username = dto.username;
                     user.password = passwordHash;
                     user.firstTimeLogin = false;
 
                     await dbContext.SaveChangesAsync();
 
-                    return Ok(user);
+                    return Ok(new UserResponseDTO(user.Id, user.firstName, user.lastName, user.email, user.username,
+                                                  user.password, user.isAdmin, user.firstTimeLogin));
                 }
                 return NotFound();
             }
