@@ -2,7 +2,7 @@
 {
     public class NewEmail
     {
-        public string email { get; set; } = String.Empty;
+        public string email { get; set;}
 
 
     }
