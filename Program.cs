@@ -55,7 +55,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors(corsPolicyBuilder =>
-   corsPolicyBuilder.WithOrigins("http://localhost:3000")
+   corsPolicyBuilder.AllowAnyOrigin()
   .AllowAnyMethod()
   .AllowAnyHeader()
 );
