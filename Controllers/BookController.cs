@@ -46,7 +46,7 @@ namespace BookRental_dotnet.Controllers
         [Authorize(Roles="True")] 
         [Route("add")]
         public async Task<IActionResult> AddBook(BookRequestDTO dto) {
-            var book = new Book(Guid.NewGuid(), dto.Author, dto.ISBN, dto.Title, true);
+            var book = new Book(Guid.NewGuid(), dto.Author, dto.Title, dto.ISBN, true);
             await dbContext.Books.AddAsync(book);
             await dbContext.SaveChangesAsync();
             return Ok(new BookResponseDTO(book.Id, book.Author, book.Title, book.ISBN, book.isAvailable));
